@@ -1,0 +1,29 @@
+.login { 
+  padding: 15px;
+}
+
+.primaryBtn, .primaryBtn:hover, .primaryBtn:focus {
+  width: 100%;
+  border-radius: 10px;
+  background-color: #293462;
+  line-height: 0px;
+  color: #fff;
+}
+
+.secondaryBtn, .secondaryBtn:hover {
+  width: 100%;
+  border-radius: 10px;
+  background-color: #ff7e7e;
+  line-height: 0px;
+  color: #fff;
+}
+
+.inputText, .inputText:hover {
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border-width: 0px;
+}
+
+.flexContainer {
+  display: flex;
+}
