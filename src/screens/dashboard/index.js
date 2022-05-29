@@ -3,7 +3,7 @@ import { Button, Card, Input, List, Tabs } from 'antd';
 import Container from '../../components/container';
 import { FiMessageCircle, FiRadio, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import { mstUser } from '../../mobx';
+import { mstAuth } from '../../mobx';
 import { observer } from 'mobx-react';
 import { getSnapshot } from 'mobx-state-tree';
 import socket from '../../socketClient';
@@ -19,22 +19,22 @@ const DashboardScreen = observer((props) => {
   const [connectedUsers, setConnectedUsers] = useState([])
 
   useEffect(() => {
-    mstUser.fetchUser()
+    mstAuth.fetchUser()
     .then((response) => {
       setIsLoading(false)
     })
   }, [])
 
   useEffect(() => {
-    if (getSnapshot(mstUser).chatUser.user_uuid !== undefined) {
+    if (getSnapshot(mstAuth).chatUser.user_uuid !== undefined) {
       socket.auth = {
-        uuid: getSnapshot(mstUser).chatUser.user_uuid,
-        email: getSnapshot(mstUser).user.email,
+        uuid: getSnapshot(mstAuth).chatUser.user_uuid,
+        email: getSnapshot(mstAuth).user.email,
       }
       socket.connect();
       socket.emit("trigger_user_update");
     }
-  }, [getSnapshot(mstUser).chatUser.user_uuid !== undefined])
+  }, [getSnapshot(mstAuth).chatUser.user_uuid !== undefined])
 
   useEffect(() => {
     socket.on('connected_users', (users) => {
@@ -60,9 +60,9 @@ const DashboardScreen = observer((props) => {
       }
     } else {
       if (target.uuid !== null) {
-        mstUser.fetchSingleUser({ user_uuid: target.uuid })
+        mstAuth.fetchSingleUser({ user_uuid: target.uuid })
         .then((response) => {
-          mstUser.updateChatTargetUser(response)
+          mstAuth.updateChatTargetUser(response)
           navigate('/chat' + '/' + target.userID);
         })
         .catch((error) => {
@@ -98,17 +98,17 @@ const DashboardScreen = observer((props) => {
                 <div className={styles.wrapper}>
                   <FiUser className={styles.icon}  size={40} />
                   <div>
-                    <div>{`${getSnapshot(mstUser).chatUser.get_detail?.first_name} ${getSnapshot(mstUser).chatUser.get_detail?.last_name}`}</div>
-                    <div>{`${getSnapshot(mstUser).chatUser.email}`}</div>
+                    <div>{`${getSnapshot(mstAuth).chatUser.get_detail?.first_name} ${getSnapshot(mstAuth).chatUser.get_detail?.last_name}`}</div>
+                    <div>{`${getSnapshot(mstAuth).chatUser.email}`}</div>
                   </div>
                 </div>
               </Card>
             </div>
             <Tabs className={styles.tabs} defaultActiveKey="1" centered>
-              <TabPane className={styles.privateChat} tab={`Private (${getSnapshot(mstUser).users.filter(user => user.email !== getSnapshot(mstUser).chatUser.email).length})`} key="1">
+              <TabPane className={styles.privateChat} tab={`Private (${getSnapshot(mstAuth).users.filter(user => user.email !== getSnapshot(mstAuth).chatUser.email).length})`} key="1">
               <List 
                 className={styles.list}
-                dataSource={getSnapshot(mstUser).users.filter(user => user.email !== getSnapshot(mstUser).chatUser.email) || []}
+                dataSource={getSnapshot(mstAuth).users.filter(user => user.email !== getSnapshot(mstAuth).chatUser.email) || []}
                 renderItem={(user, index) => {
                   return (
                     <Card

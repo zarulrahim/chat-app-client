@@ -4,7 +4,7 @@ import { getSnapshot } from 'mobx-state-tree';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../../components/container';
-import { mstAuth, mstUser } from '../../mobx';
+import { mstAuth } from '../../mobx';
 import styles from './index.module.css';
 
 const AuthScreen = observer((props) => {
@@ -37,7 +37,7 @@ const AuthScreen = observer((props) => {
     }
     mstAuth.adminLogin(params)
     .then((_adminLoginResponse) => {
-      mstUser.fetchSingleUser(_adminLoginResponse.user)
+      mstAuth.fetchSingleUser(_adminLoginResponse.user)
       .then((_fetchSingleUserResponse) => {
         navigate('/admin/dashboard');
       })

@@ -5,7 +5,7 @@ import { AiOutlineSend  } from 'react-icons/ai';
 import moment from 'moment';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getSnapshot } from 'mobx-state-tree';
-import { mstUser } from '../../mobx';
+import { mstAuth } from '../../mobx';
 import socket from '../../socketClient';
 import styles from './index.module.css';
 
@@ -28,8 +28,8 @@ const ChatScreen = (props) => {
       message: message,
       room: target_id,
       to: target_id,
-      from: getSnapshot(mstUser).chatUser.get_detail.first_name,
-      fromUuid: getSnapshot(mstUser).chatUser.user_uuid,
+      from: getSnapshot(mstAuth).chatUser.get_detail.first_name,
+      fromUuid: getSnapshot(mstAuth).chatUser.user_uuid,
       timestamp: moment().format("DD/MM/YY h:m")
     }
     if (data.message !== "") {
@@ -40,7 +40,7 @@ const ChatScreen = (props) => {
         content: data.message,
         sender: data.from,
         uuid: data.fromUuid,
-        fromMyself: getSnapshot(mstUser).chatUser.user_uuid === data.fromUuid,
+        fromMyself: getSnapshot(mstAuth).chatUser.user_uuid === data.fromUuid,
         timestamp: data.timestamp
       }
       setConvos(values => [...values, newConvos])
@@ -55,7 +55,7 @@ const ChatScreen = (props) => {
         content: data.message,
         sender: data.from,
         uuid: data.uuid,
-        fromMyself: getSnapshot(mstUser).chatUser.user_uuid === data.uuid,
+        fromMyself: getSnapshot(mstAuth).chatUser.user_uuid === data.uuid,
         timestamp: data.timestamp
       }
       setConvos(values => [...values, newConvos])
@@ -64,7 +64,7 @@ const ChatScreen = (props) => {
 
   return (
     <Container
-      headerTitle={props.type === "group" ? `Room #${target_id}` : `${getSnapshot(mstUser).chatTargetUser.get_detail.first_name}`}
+      headerTitle={props.type === "group" ? `Room #${target_id}` : `${getSnapshot(mstAuth).chatTargetUser.get_detail.first_name}`}
       enableBackButton={true}
       onBackEvent={() => {
         navigate(-1);

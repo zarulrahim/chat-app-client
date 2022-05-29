@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { getSnapshot } from 'mobx-state-tree';
 import { observer } from 'mobx-react';
 import Container from '../../components/container';
-import { mstAuth, mstUser } from '../../mobx';
+import { mstAuth } from '../../mobx';
 import styles from './index.module.css';
 import moment from 'moment';
 import { colors } from '../../themes';
@@ -24,7 +24,7 @@ const AdminDashboardScreen = observer((props) => {
   })
   
   useEffect(() => {
-    mstUser.fetchUser();
+    mstAuth.fetchUser();
   }, [])
 
   const onChangeScreen = (screen) => {
@@ -72,7 +72,7 @@ const AdminDashboardScreen = observer((props) => {
   }
 
   const onEditUser = (user) => {
-    mstUser.fetchSingleUser({ user_uuid: user.user_uuid })
+    mstAuth.fetchSingleUser({ user_uuid: user.user_uuid })
     .then((response) => {
       // console.log("check response ===> ", response)
       setFormState({
@@ -91,10 +91,10 @@ const AdminDashboardScreen = observer((props) => {
   }
 
   const onGotoUser = (user) => {
-    mstUser.fetchSingleUser({ user_uuid: user.user_uuid })
+    mstAuth.fetchSingleUser({ user_uuid: user.user_uuid })
     .then((response) => {
       // console.log("check response ===> ", response)
-      mstUser.updateChatUser(response);
+      mstAuth.updateChatUser(response);
       navigate('/users/' + response.user_uuid);
     })
     .catch((error) => {
@@ -203,7 +203,7 @@ const AdminDashboardScreen = observer((props) => {
         {
           currentScreen === 'default' ?
           (
-            <UserListingComponent users={getSnapshot(mstUser).users || []} navigate={navigate} onEditUser={onEditUser} onRemoveUser={onRemoveUser} onGotoUser={onGotoUser} />
+            <UserListingComponent users={getSnapshot(mstAuth).users || []} navigate={navigate} onEditUser={onEditUser} onRemoveUser={onRemoveUser} onGotoUser={onGotoUser} />
           )
           : currentScreen === 'register' ?
           (
