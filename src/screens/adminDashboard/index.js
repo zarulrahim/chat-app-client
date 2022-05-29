@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Input, List, Modal } from 'antd';
+import { Button, Card, DatePicker, Input, List, Modal } from 'antd';
 import { AiOutlineWarning  } from 'react-icons/ai';
-import { FiEdit, FiTrash2, FiUserPlus } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiUser, FiUserPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { getSnapshot } from 'mobx-state-tree';
 import { observer } from 'mobx-react';
 import Container from '../../components/container';
 import { mstAuth, mstUser } from '../../mobx';
 import styles from './index.module.css';
+import moment from 'moment';
+import { colors } from '../../themes';
 
-const USERS = [
-  { id: 1, name: "Ahmad", followed: true },
-  { id: 1, name: "Abu", followed: false },
-  { id: 1, name: "Akmal", followed: true },
-  { id: 1, name: "Ridhwan", followed: false }
-]
 const AdminDashboardScreen = observer((props) => {
   const navigate = useNavigate();
   const [currentScreen, setCurrentScreen] = useState('default'); // default | register | edit
-  const [selectedUser, setSelectedUser] = useState(null);
   const [formState, setFormState] = useState({
     first_name: "",
     last_name: "",
@@ -39,7 +34,7 @@ const AdminDashboardScreen = observer((props) => {
   const onChangeInput = (value, type) => {
     formState[type] = value;
     setFormState(formState);
-    console.log("check formState ===> ", formState)
+    // console.log("check formState ===> ", formState)
   };
 
   const onUpdate = () => {
@@ -52,20 +47,34 @@ const AdminDashboardScreen = observer((props) => {
     })
   };
 
+  const onRegister = () => {
+    mstAuth.storeUser(formState)
+    .then((response) => {
+      // alert("User has been created!");
+      onChangeScreen('default');
+    })
+    .catch((error) => {
+      alert(error);
+    })
+  };
+
   const onRemoveUser = (user) => {
     Modal.confirm({
       title: 'User Deletion',
       icon: <AiOutlineWarning size={30} color={'orange'} style={{ marginBottom: 5  }} />,
       content: `Are you sure want to remove ${user.email} ?`,
       okText: 'Yes',
-      cancelText: 'No'
+      cancelText: 'No',
+      onOk: () => {
+        mstAuth.deleteUser(user)
+      }
     });
   }
 
-  const onSelectUser = (user) => {
+  const onEditUser = (user) => {
     mstUser.fetchSingleUser({ user_uuid: user.user_uuid })
     .then((response) => {
-      console.log("check response ===> ", response)
+      // console.log("check response ===> ", response)
       setFormState({
         first_name: response.get_detail.first_name,
         last_name: response.get_detail.last_name,
@@ -74,8 +83,19 @@ const AdminDashboardScreen = observer((props) => {
         phone_number: response.phone_number,
         dob: response.get_detail.dob
       })
-      setSelectedUser(response)
       onChangeScreen('edit');
+    })
+    .catch((error) => {
+      alert("Something went wrong. Please try again later");
+    })
+  }
+
+  const onGotoUser = (user) => {
+    mstUser.fetchSingleUser({ user_uuid: user.user_uuid })
+    .then((response) => {
+      // console.log("check response ===> ", response)
+      mstUser.updateChatUser(response);
+      navigate('/users/' + response.user_uuid);
     })
     .catch((error) => {
       alert("Something went wrong. Please try again later");
@@ -85,14 +105,14 @@ const AdminDashboardScreen = observer((props) => {
   const UserListingComponent = (props) => {
     return (
       <List 
-        style={customStyles.list}
+        className={styles.list}
         dataSource={props.users}
         header={
-          <div style={customStyles.list.headerWrapper}>
-            <div style={customStyles.list.header}>
-              <Input placeholder='Search User' style={customStyles.list.searchBox} />
-              <Button style={{ padding: 0, lineHeight: 0 }} type='link' onClick={() => { onChangeScreen('register') }}>
-                <FiUserPlus size={28} color={'#F24C4C'} />
+          <div className={styles.listHeader}>
+            <div className={styles.wrapper}>
+              <Input placeholder='Search User' className={styles.searchBox} />
+              <Button className={styles.button} type='link' onClick={() => { onChangeScreen('register') }}>
+                <FiUserPlus size={28} color={colors.primary} />
               </Button>
             </div>
           </div>
@@ -102,16 +122,19 @@ const AdminDashboardScreen = observer((props) => {
             <Card
               bodyStyle={customStyles.list.cardBody}
             >
-              <div style={customStyles.list.item}>
-                <div style={customStyles.list.item}>
+              <div className={styles.listItem}>
+                <div className={styles.listItem}>
                   <div>{user.email}</div>
                 </div>
-                <div style={customStyles.list.item}>
-                  <Button style={{ padding: 0, lineHeight: 0 }} type='link' onClick={() => { props.onSelectUser(user) }}>
-                    <FiEdit size={22} color={'#F24C4C'} style={{ marginRight: 15 }} />
+                <div className={styles.listItem}>
+                  <Button className={styles.button} style={{ marginRight: 15 }} type='link' onClick={() => { props.onGotoUser(user) }}>
+                    <FiUser size={22} color={colors.primary} />
                   </Button>
-                  <Button style={{ padding: 0, lineHeight: 0 }} type='link' onClick={() => { props.onRemoveUser(user) }}>
-                    <FiTrash2 size={22} color={'#F24C4C'} style={{ marginRight: 0 }} />
+                  <Button className={styles.button} style={{ marginRight: 15 }}  type='link' onClick={() => { props.onEditUser(user) }}>
+                    <FiEdit size={20} color={colors.primary}/>
+                  </Button>
+                  <Button className={styles.button} style={{ marginRight: 0 }} type='link' onClick={() => { props.onRemoveUser(user) }}>
+                    <FiTrash2 size={20} color={colors.primary} />
                   </Button>
                 </div>
               </div>
@@ -134,10 +157,10 @@ const AdminDashboardScreen = observer((props) => {
           <Input className={styles.inputText} size="large" style={{marginLeft: 5}} placeholder='Phone' onChange={(e) => { props.onChangeInput(e.target.value, "phone_number")  }} />
         </div>
         <div className={styles.flexContainer}>
-          <Input className={styles.inputText} size="large" placeholder='Date of Birth' />
+          <DatePicker className={styles.datePicker} size="large" placeholder='Date of Birth' onChange={(date, dateString) => { props.onChangeInput(dateString, "dob") }} />
         </div>
         <div className={styles.flexContainer}>
-          <Input className={styles.inputText} size="large" placeholder='Password' onChange={(e) => { props.onChangeInput(e.target.value, "password")  }} />
+          <Input.Password className={styles.inputText} size="large" placeholder='Password' onChange={(e) => { props.onChangeInput(e.target.value, "password")  }} />
         </div>
         <div className={styles.flexContainer}>
           <Button className={styles.primaryBtn} type='link' size='large' onClick={() => { props.onRegister() }}>Add User</Button>
@@ -158,10 +181,10 @@ const AdminDashboardScreen = observer((props) => {
           <Input defaultValue={props.formState.phone_number} className={styles.inputText} size="large" style={{marginLeft: 5}} placeholder='Phone' onChange={(e) => { props.onChangeInput(e.target.value, "phone_number")  }} />
         </div>
         <div className={styles.flexContainer}>
-          <Input defaultValue={props.formState.dob} className={styles.inputText} size="large" placeholder='Date of Birth' />
+          <DatePicker defaultValue={moment(props.formState.dob, "YYYY-MM-DD")} className={styles.datePicker} size="large" placeholder='Date of Birth' onChange={(date, dateString) => { props.onChangeInput(dateString, "dob") }} />
         </div>
         <div className={styles.flexContainer}>
-          <Input className={styles.inputText} size="large" placeholder='Password' onChange={(e) => { props.onChangeInput(e.target.value, "password")  }} />
+          <Input.Password className={styles.inputText} size="large" placeholder='Password' onChange={(e) => { props.onChangeInput(e.target.value, "password")  }} />
         </div>
         <div className={styles.flexContainer}>
           <Button className={styles.primaryBtn} type='link' size='large' onClick={() => { props.onUpdate() }}>Update User</Button>
@@ -176,15 +199,15 @@ const AdminDashboardScreen = observer((props) => {
       enableBackButton={currentScreen !== 'default'}
       onBackEvent={() => onChangeScreen('default')}
     >
-      <div style={customStyles.content}>
+      <div className={styles.content}>
         {
           currentScreen === 'default' ?
           (
-            <UserListingComponent users={getSnapshot(mstUser).users || []} navigate={navigate} onSelectUser={onSelectUser} onRemoveUser={onRemoveUser} />
+            <UserListingComponent users={getSnapshot(mstUser).users || []} navigate={navigate} onEditUser={onEditUser} onRemoveUser={onRemoveUser} onGotoUser={onGotoUser} />
           )
           : currentScreen === 'register' ?
           (
-            <UserRegisterComponent />
+            <UserRegisterComponent formState={formState} onChangeInput={onChangeInput} onRegister={onRegister} />
           )
           : currentScreen === 'edit' ?
           (
@@ -201,65 +224,11 @@ const AdminDashboardScreen = observer((props) => {
 })
 
 const customStyles = {
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  content: {
-    padding: '15px'
-  },
-  mainTitle: {
-    color: '#fff',
-    fontSize: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-    textAlign: 'center'
-  },
-  menuSelection: {
-    display: 'flex',
-    card: {
-      width: '100%',
-      textAlign: 'center',
-      borderRadius: 15,
-    }
-  },
   list: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    overflow: 'hidden',
-    headerWrapper: {
-      paddingLeft: 24,
-      paddingRight: 24,
-      paddingTop: 10,
-    },
-    header: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    },
-    searchBox: {
-      borderRadius: 10,
-      marginRight: 20,
-      marginBottom: 5
-    },
-    resultCountLabel: {
-      fontSize: 12,
-      color: 'lightgrey'
-    },
-    card: {
-      // borderRadius: 10,
-      // marginBottom: 5
-    },
     cardBody: {
       paddingTop: 10,
       paddingBottom: 10,
     },
-    item: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    }
   }
 }
 

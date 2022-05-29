@@ -8,19 +8,12 @@ import HomeScreen from './screens/home';
 import ChatScreen from './screens/chat';
 import AuthScreen from './screens/auth';
 import DashboardScreen from './screens/dashboard';
-import io from 'socket.io-client';
 import { observer } from 'mobx-react';
 import { getSnapshot } from 'mobx-state-tree';
 import { mstAuth } from './mobx';
 import AdminDashboardScreen from './screens/adminDashboard';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const App = observer((props) => {  
-  useEffect(() => {
-    // mstAuth.fetchCsrfToken()
-  }, [])
-
   return (
     <BrowserRouter>
       <Routes>
@@ -30,7 +23,7 @@ const App = observer((props) => {
           getSnapshot(mstAuth).isLoggedIn ? // Only LoggedIn user can access these routes
           (
             <>
-              <Route path="/dashboard" element={<DashboardScreen />} />
+              <Route path="/users/:target_id" element={<DashboardScreen />} />
               <Route path="/admin/dashboard" element={<AdminDashboardScreen />} />
               <Route path="/chat/:target_id" element={<ChatScreen type={"private"} />} />
               <Route path="/group/:target_id" element={<ChatScreen type={"group"} />} />

@@ -1,0 +1,100 @@
+.content {
+  padding: 15px;
+}
+
+.accountInfo .card {
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+
+.accountInfo .wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.accountInfo .icon {
+  margin-right: 15px;
+}
+
+.tabs {
+  background-color: #fff;
+  border-radius: 15px;
+}
+
+.privateChat .list {
+  background-color: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  padding-top: 0;
+}
+
+.privateChat .card {
+  border-top-width: 0;
+}
+
+.privateChat .listItemWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.privateChat .listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.privateChat .onlineIndicatorWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.privateChat .onlineIndicator {
+  color: green;
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.privateChat .offlineIndicatorWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.privateChat .offlineIndicator {
+  color: grey;
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.privateChat .button {
+ padding: 0;
+ line-height: 0; 
+}
+
+.groupChat .wrapper {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 0;
+}
+
+.groupChat .content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin-bottom: 15px;
+}
+
+.groupChat .searchBox {
+  border-radius: 10px;
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+
+.groupChat .button {
+  border-radius: 10px;
+  line-height: 0; 
+ }

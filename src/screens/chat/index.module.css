@@ -1,0 +1,76 @@
+.content {
+  padding: 15px;
+}
+
+.chatboxCard {
+  width: 100%;
+  text-align: center;
+  border-radius: 15px;
+  border-width: 0;
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.convosCard {
+  width: 60%;
+  position: relative;
+  border-radius: 15px;
+  border-width: 0;
+  margin-bottom: 10px;
+  text-align: left;
+}
+.convosCardFromMyself {
+  float: right;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 15px;
+  background-color: #0096fb;
+}
+.convosCardFromOthers {
+  float: left;
+  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 0;
+  background-color: #d9d9d9;
+}
+
+.convosBody {
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.convosBodyFromMyself {
+  color: #fff; 
+}
+
+.convosBodyFromOthers {
+  color: #333;
+}
+
+.convosBody .senderName {
+  margin-bottom: 5px;
+}
+
+.convosBody .chatTimestamp {
+  font-size: 12px;
+  margin-top: 5px;
+  opacity: 0.5;
+}
+
+.messageBox {
+  display: flex;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+
+.messageBox .textArea {
+  width: 95%;
+  border-radius: 10px;
+  border-width: 0;
+}
+
+.messageBox .button {
+  border-radius: 50px;
+  padding-right: 0;
+  line-height: 0;
+  color: #fff;
+  margin-right: 0;
+}

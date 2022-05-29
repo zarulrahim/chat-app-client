@@ -1,0 +1,14 @@
+.content {
+  padding: 15px;
+}
+
+.menuSelection {
+  display: flex;
+}
+
+.menuSelectionCard {
+  width: 100%;
+  text-align: center;
+  border-radius: 15px;
+  cursor: pointer;
+}
