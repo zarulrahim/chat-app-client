@@ -13,7 +13,6 @@ import { colors } from '../../themes';
 
 const AdminDashboardScreen = observer((props) => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [currentScreen, setCurrentScreen] = useState('default'); // default | register | edit
   const [formState, setFormState] = useState({
@@ -27,12 +26,6 @@ const AdminDashboardScreen = observer((props) => {
   
   useEffect(() => {
     mstAuth.fetchUser()
-    .then((response) => {
-      setUsers(response)
-    })
-    .catch((error) => {
-      alert(error)
-    })
   }, [])
 
   const onChangeScreen = (screen) => {
@@ -126,7 +119,7 @@ const AdminDashboardScreen = observer((props) => {
           (
             <List 
               className={styles.list}
-              dataSource={users.filter(i => i.email.includes(keyword))}
+              dataSource={getSnapshot(mstAuth).users.filter(i => i.email.includes(keyword))}
               header={
                 <div className={styles.listHeader}>
                   <div className={styles.wrapper}>
